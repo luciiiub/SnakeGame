@@ -7,7 +7,7 @@ public class Snake : MonoBehaviour
     private Vector2 direction = Vector2.right;
     private Vector2 inputDirection = Vector2.right;
     private List<Transform> segments;
-    private List<GameObject> connectors; 
+    private List<GameObject> connectors;
     private Rigidbody2D rb;
     private GameOverManager gameOverManager;
     private int score = 0;
@@ -16,7 +16,7 @@ public class Snake : MonoBehaviour
     public GameObject connectorPrefab;
     public Food foodScript;
 
-    [SerializeField] private float moveRate = 0.2f;
+    [SerializeField] private float moveRate = 0.5f;
     [SerializeField] private float stepSize = 1f;
 
     private float timer;
@@ -32,7 +32,7 @@ public class Snake : MonoBehaviour
     {
         segments = new List<Transform>();
         segments.Add(transform);
-        connectors = new List<GameObject>(); 
+        connectors = new List<GameObject>();
     }
 
     private void Update()
@@ -51,13 +51,14 @@ public class Snake : MonoBehaviour
     {
         var keyboard = Keyboard.current;
         if (keyboard == null) return;
-        if (keyboard.wKey.wasPressedThisFrame && direction != Vector2.down)
+        // WASD + Flechas
+        if ((keyboard.wKey.wasPressedThisFrame || keyboard.upArrowKey.wasPressedThisFrame) && direction != Vector2.down)
             inputDirection = Vector2.up;
-        else if (keyboard.sKey.wasPressedThisFrame && direction != Vector2.up)
+        else if ((keyboard.sKey.wasPressedThisFrame || keyboard.downArrowKey.wasPressedThisFrame) && direction != Vector2.up)
             inputDirection = Vector2.down;
-        else if (keyboard.aKey.wasPressedThisFrame && direction != Vector2.right)
+        else if ((keyboard.aKey.wasPressedThisFrame || keyboard.leftArrowKey.wasPressedThisFrame) && direction != Vector2.right)
             inputDirection = Vector2.left;
-        else if (keyboard.dKey.wasPressedThisFrame && direction != Vector2.left)
+        else if ((keyboard.dKey.wasPressedThisFrame || keyboard.rightArrowKey.wasPressedThisFrame) && direction != Vector2.left)
             inputDirection = Vector2.right;
     }
 
@@ -119,7 +120,7 @@ public class Snake : MonoBehaviour
         }
         segments.Add(segment);
 
-        // NUEVO: Crear conector entre el nuevo segmento y el anterior
+        //Crea conector entre el nuevo segmento y el anterior!!
         if (segments.Count > 1 && connectorPrefab != null)
         {
             GameObject connector = Instantiate(connectorPrefab);
@@ -137,7 +138,7 @@ public class Snake : MonoBehaviour
             Destroy(segments[i].gameObject);
         }
 
-        // NUEVO: Destruir conectores
+        //Destruir conectores
         foreach (GameObject connector in connectors)
         {
             Destroy(connector);
